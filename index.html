@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZAAM GROUP – Transactions &amp; Profit and Loss</title>
+<style>
+:root{--bg:#eef2f4;--sf:#fff;--ink:#14232b;--mut:#5d6f78;--ln:#d3dce1;--pri:#0f5c6e;--inc:#0a7a4b;--exp:#b3361f;--incbg:#e2f3ea;--expbg:#f9e6e1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f181d;--sf:#17242b;--ink:#e6eef1;--mut:#92a5ae;--ln:#2a3b44;--pri:#52b6cb;--inc:#4cc58b;--exp:#f08a73;--incbg:#12301f;--expbg:#3a1d17;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f181d;--sf:#17242b;--ink:#e6eef1;--mut:#92a5ae;--ln:#2a3b44;--pri:#52b6cb;--inc:#4cc58b;--exp:#f08a73;--incbg:#12301f;--expbg:#3a1d17;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+h1{font:700 22px/1.2 Georgia,"Times New Roman",serif;margin:0}
+nav{display:flex;gap:4px;background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:3px}
+nav button{border:0;background:none;color:var(--mut);padding:8px 14px;border-radius:8px;font:inherit;cursor:pointer}
+nav button.on{background:var(--pri);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:16px;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px 14px}
+.stat small{color:var(--mut)}.stat b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.inc{color:var(--inc)}.exp{color:var(--exp)}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:9px}
+.full{grid-column:1/-1}
+.btn{border:0;background:var(--pri);color:#fff;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+.btn.alt{background:none;color:var(--ink);border:1px solid var(--ln)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:flex;border:1px solid var(--ln);border-radius:8px;overflow:hidden}
+.seg label{flex:1;flex-direction:row;justify-content:center;padding:9px;cursor:pointer;color:var(--ink)}
+.seg input{display:none}.seg label:has(input:checked).i{background:var(--incbg);color:var(--inc);font-weight:600}.seg label:has(input:checked).e{background:var(--expbg);color:var(--exp);font-weight:600}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--ln);vertical-align:top}
+th{font-size:13px;color:var(--mut);font-weight:600}td.n,th.n{text-align:right}
+.chip{display:inline-block;border:1px solid var(--ln);border-radius:6px;padding:1px 7px;font-size:12px;margin:2px 4px 0 0;background:var(--bg);cursor:pointer;color:var(--ink)}
+.empty{color:var(--mut);text-align:center;padding:24px}
+.bars{display:grid;gap:8px}.bar{display:grid;grid-template-columns:70px 1fr 90px;gap:8px;align-items:center;font-size:13px}
+.track{height:16px;background:var(--bg);border-radius:4px;position:relative;overflow:hidden}
+.track i{position:absolute;top:0;bottom:0;left:0}.track i+i{top:50%;bottom:0}.track i:first-child{bottom:50%}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modal.on{display:flex}.modal img,.modal iframe{max-width:100%;max-height:85vh;background:#fff;border-radius:8px}
+.modal iframe{width:90vw;height:85vh}
+.hide{display:none}
+.inl{flex-direction:row;align-items:center;gap:6px}
+.btn.sm{padding:5px 10px;font-size:13px}a.btn{text-decoration:none;display:inline-block}
+.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.mbox{background:var(--sf);color:var(--ink);border:1px solid var(--ln);border-radius:12px;padding:18px;width:min(860px,92vw);max-height:92vh;overflow:auto}
+.mbox.wide{width:min(1100px,95vw)}
+.mbox img{max-width:100%;max-height:320px;display:block;margin-top:8px;border-radius:6px;background:#fff}
+.mbox img.big{max-height:none}
+.mbox iframe{width:100%;height:380px;margin-top:8px;border:1px solid var(--ln);border-radius:6px}
+.mbox iframe.big{height:72vh}
+.at{border-top:1px solid var(--ln);padding:10px 0}
+@media print{nav,header .row,.noprint,#tab-tx{display:none!important}body{background:#fff;color:#000}.card,.stat{border-color:#999}}
+.brand{color:#FFD600;background:#14232b;padding:6px 16px;border-radius:10px;letter-spacing:.08em;font-family:system-ui,"Segoe UI",Arial,sans-serif;font-weight:800}
+
+:root,:root[data-theme="light"],:root:not([data-theme="light"]){--bg:#0a0e17;--sf:#121826;--ink:#e6ebf5;--mut:#7d8aa5;--ln:#222c42;--pri:#2962ff;--inc:#00c076;--exp:#ff4d5e;--incbg:#0d3324;--expbg:#3a1520;color-scheme:dark}
+body{background:var(--bg)}
+h1.brand{font:800 30px Segoe UI,Arial,sans-serif;letter-spacing:8px;color:#f0b90b;text-shadow:0 0 18px rgba(240,185,11,.45)}
+header{border-bottom:2px solid #f0b90b;padding-bottom:10px}
+nav button.on{box-shadow:0 0 12px rgba(41,98,255,.55)}
+.stat{border-left:4px solid var(--pri)}.stat b{font-family:Consolas,monospace}
+#clock{font:600 13px Consolas,monospace;color:var(--mut)}#clock i{color:var(--inc);font-style:normal;animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.2}}
+#tick{background:#05080f;border:1px solid var(--ln);border-radius:8px;overflow:hidden;white-space:nowrap;font:600 13px Consolas,monospace;padding:7px 0;margin-bottom:14px}
+#tick div{display:inline-block;padding-left:100%;animation:sc 45s linear infinite}#tick:hover div{animation-play-state:paused}
+@keyframes sc{to{transform:translateX(-100%)}}
+#tick span{margin:0 26px}#tick .u{color:var(--inc)}#tick .d{color:var(--exp)}#tick b{color:#9fb0d0;margin-right:6px}
+#spark{width:100%;height:70px;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><h1 class="brand">ZAAM GROUP</h1><div id="clock"></div></div>
+  <nav id="nav"><button data-t="tx" class="on">Transactions</button><button data-t="pl">Profit &amp; Loss</button></nav>
+</header>
+<div id="tick"><div id="tk"></div></div>
+<div class="card"><small style="color:var(--mut)">LIVE PROFIT / LOSS CURVE</small><svg id="spark" viewBox="0 0 600 70" preserveAspectRatio="none"></svg></div>
+
+<section id="tab-tx">
+  <div class="stats" id="stats"></div>
+  <div class="card">
+    <form id="f">
+      <div class="full seg"><label class="i"><input type="radio" name="type" value="income" checked>Income</label><label class="e"><input type="radio" name="type" value="expense">Expense</label></div>
+      <label>Date<input type="date" name="date" required></label>
+      <label>Amount<input type="number" name="amount" min="0.01" step="0.01" required placeholder="0.00"></label>
+      <label>Category<input name="category" list="cats" required placeholder="e.g. Sales, Rent"></label>
+      <label>Payment method<select name="method"><option>Cash</option><option>Bank transfer</option><option>Card</option><option>Easypaisa / JazzCash</option><option>Other</option></select></label>
+      <label class="full">Description<input name="desc" placeholder="What was this for?"></label>
+      <label class="full">Attachments (receipts, invoices, images, PDFs)<input type="file" name="files" id="files" multiple></label>
+      <div class="full row" id="keepbox"></div>
+      <div class="full row"><button class="btn" id="save">Save transaction</button><button type="button" class="btn alt hide" id="cancel">Cancel edit</button><span id="msg" class="exp"></span></div>
+    </form>
+    <datalist id="cats"></datalist>
+  </div>
+  <div class="card">
+    <div class="row" style="margin-bottom:10px">
+      <input type="search" id="q" placeholder="Search" aria-label="Search">
+      <select id="ft" aria-label="Type"><option value="">All types</option><option value="income">Income</option><option value="expense">Expense</option></select>
+      <input type="month" id="fm" aria-label="Month">
+      <label class="inl">From <input type="date" id="fd1"></label>
+      <label class="inl">To <input type="date" id="fd2"></label>
+      <button class="btn alt" id="clr">Clear filters</button>
+    </div>
+    <div class="row" style="margin-bottom:10px;padding:10px;border:1px dashed var(--ln);border-radius:10px">
+      <b>Ledger report</b>
+      <select id="grp" aria-label="Group report by"><option value="">All together</option><option value="day">Day by day</option><option value="week">Week by week</option><option value="month">Month by month</option></select>
+      <label class="inl"><input type="checkbox" id="att"> Include attachments</label>
+      <span class="row" style="margin-left:auto"><button class="btn alt" id="prt" type="button">🖨 Print</button><button class="btn alt" id="pdf" type="button">⬇ PDF</button><button class="btn alt" id="doc" type="button">⬇ Word</button></span>
+    </div>
+    <div class="tw"><table><thead><tr><th>Date</th><th>Details</th><th class="n">Amount</th><th></th></tr></thead><tbody id="list"></tbody></table></div>
+  </div>
+</section>
+
+<section id="tab-pl" class="hide">
+  <div class="card row">
+    <label>Period<select id="pp"><option value="month">This month</option><option value="year">This year</option><option value="all">All time</option><option value="custom">Custom range</option></select></label>
+    <label class="cr hide">From<input type="date" id="pf"></label>
+    <label class="cr hide">To<input type="date" id="pt"></label>
+    <button class="btn noprint" id="print" style="margin-left:auto">Print report</button>
+  </div>
+  <div id="plout"></div>
+</section>
+</div>
+
+<div class="modal" id="modal"><div id="mbody"></div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const cur="Rs ";
+const fmt=n=>cur+Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let tx=[],editId=null,keep=[],db=null;
+
+/* storage: IndexedDB with in-memory fallback */
+function openDB(){return new Promise(r=>{try{const q=indexedDB.open("ledger",1);q.onupgradeneeded=()=>q.result.createObjectStore("tx",{keyPath:"id"});q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}})}
+const run=(m,fn)=>new Promise(r=>{if(!db)return r();try{const t=db.transaction("tx",m);const rq=fn(t.objectStore("tx"));t.oncomplete=()=>r(rq&&rq.result);t.onerror=()=>r()}catch(e){r()}});
+const load=async()=>{tx=(await run("readonly",s=>s.getAll()))||[]};
+const put=t=>run("readwrite",s=>s.put(t));
+const del=id=>run("readwrite",s=>s.delete(id));
+
+const today=()=>new Date().toISOString().slice(0,10);
+const readFile=f=>new Promise(r=>{const x=new FileReader();x.onload=()=>r({name:f.name,type:f.type,data:x.result});x.readAsDataURL(f)});
+
+/* tabs */
+$("#nav").onclick=e=>{const t=e.target.dataset.t;if(!t)return;document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b===e.target));$("#tab-tx").classList.toggle("hide",t!=="tx");$("#tab-pl").classList.toggle("hide",t!=="pl");if(t==="pl")pl()};
+
+/* form */
+function reset(){editId=null;keep=[];$("#f").reset();$("#f").date.value=today();$("#save").textContent="Save transaction";$("#cancel").classList.add("hide");$("#msg").textContent="";renderKeep()}
+$("#cancel").onclick=reset;
+$("#f").onsubmit=async e=>{
+  e.preventDefault();const f=e.target;
+  const files=await Promise.all([...$("#files").files].map(readFile));
+  const big=files.reduce((a,b)=>a+b.data.length,0);
+  if(big>25e6){$("#msg").textContent="Attachments are over 25 MB. Choose smaller files.";return}
+  const old=editId?tx.find(t=>t.id===editId):null;
+  const t={id:editId||crypto.randomUUID(),type:f.type.value,date:f.date.value,amount:parseFloat(f.amount.value),category:f.category.value.trim(),method:f.method.value,desc:f.desc.value.trim(),files:[...keep,...files]};
+  await put(t);if(old)tx=tx.filter(x=>x.id!==old.id);tx.push(t);
+  if(!db)$("#msg").textContent="Storage unavailable: data lasts only until you close this page.";
+  const wasEdit=!!editId;reset();render();if(wasEdit)$("#msg").textContent="Updated."
+};
+
+/* list */
+function filtered(){const q=$("#q").value.toLowerCase(),ty=$("#ft").value,m=$("#fm").value;
+  return tx.filter(t=>(!ty||t.type===ty)&&(!m||t.date.startsWith(m))&&(!$("#fd1").value||t.date>=$("#fd1").value)&&(!$("#fd2").value||t.date<=$("#fd2").value)&&(!q||(t.desc+t.category+t.method).toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date))}
+function render(){
+  try{live()}catch(e){}
+  const all=tx,inc=sum(all,"income"),ex=sum(all,"expense");
+  $("#stats").innerHTML=`<div class="stat"><small>Total income</small><b class="inc">${fmt(inc)}</b></div><div class="stat"><small>Total expenses</small><b class="exp">${fmt(ex)}</b></div><div class="stat"><small>Net profit</small><b class="${inc-ex<0?"exp":"inc"}">${fmt(inc-ex)}</b></div><div class="stat"><small>Transactions</small><b>${all.length}</b></div>`;
+  $("#cats").innerHTML=[...new Set(tx.map(t=>t.category))].map(c=>`<option value="${esc(c)}">`).join("");
+  const l=filtered();
+  $("#list").innerHTML=l.length?l.map(t=>`<tr><td>${t.date}</td><td><b>${esc(t.category)}</b> <span style="color:var(--mut)">· ${esc(t.method)}</span><br>${esc(t.desc)}<br>${(t.files||[]).map((f,i)=>`<span class="chip" data-v="${t.id}:${i}">${esc(f.name)}</span>`).join("")}</td><td class="n ${t.type==="income"?"inc":"exp"}">${t.type==="income"?"+":"−"}${fmt(t.amount)}</td><td class="n"><div class="acts"><button class="btn sm" data-s="${t.id}">📎 Attachments (${(t.files||[]).length})</button><button class="btn alt sm" data-o="${t.id}">Open</button><button class="btn alt sm" data-e="${t.id}">Edit</button><button class="btn alt sm" data-p="${t.id}">Print</button><button class="btn alt sm" data-d="${t.id}">Delete</button></div></td></tr>`).join(""):`<tr><td colspan="4" class="empty">No transactions yet. Add your first income or expense above.</td></tr>`;
+}
+
+/* live trader ticker */
+const sgn2=n=>(n>=0?"▲ +":"▼ −")+fmt(Math.abs(n));
+function live(){
+  const inc=sum(tx,"income"),ex=sum(tx,"expense"),P=inc-ex,T=today();
+  const td=tx.filter(t=>t.date===T).reduce((s,t)=>s+(t.type==="income"?t.amount:-t.amount),0);
+  const rec=[...tx].sort((a,b)=>a.date.localeCompare(b.date)).slice(-8).map(t=>[String(t.category).toUpperCase(),t.type==="income"?t.amount:-t.amount,1]);
+  const items=[["NET P/L",P,1],["INCOME",inc,1],["EXPENSE",-ex,1],["TODAY",td,1],["TRADES",tx.length,2],...rec];
+  const h=items.map(([k,v,m])=>`<span class="${m==2?"":(v>=0?"u":"d")}"><b>${esc(k)}</b>${m==2?v:sgn2(v)}</span>`).join("");
+  $("#tk").innerHTML=h+h;
+  let c=0;const pts=[...tx].sort((a,b)=>a.date.localeCompare(b.date)).map(t=>c+=(t.type==="income"?t.amount:-t.amount)),sv=$("#spark");
+  if(pts.length>1){const mn=Math.min(0,...pts),mx=Math.max(0,...pts),r=mx-mn||1,y=v=>66-((v-mn)/r)*60,x=i=>i/(pts.length-1)*600,col=P>=0?"#00c076":"#ff4d5e";
+    const d=pts.map((v,i)=>(i?"L":"M")+x(i)+","+y(v)).join(" ");
+    sv.innerHTML=`<line x1="0" x2="600" y1="${y(0)}" y2="${y(0)}" stroke="#222c42" stroke-dasharray="4"/><path d="${d} L600,${y(0)} L0,${y(0)}Z" fill="${col}" opacity=".15"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke"/>`}
+  else sv.innerHTML='<text x="10" y="40" fill="#7d8aa5" font-size="12">Add transactions to see the live curve</text>'}
+function clock(){const n=new Date();$("#clock").innerHTML=n.toLocaleDateString("en-GB",{weekday:"short",day:"2-digit",month:"short",year:"numeric"})+" &nbsp; "+n.toLocaleTimeString("en-GB")+" <i>● LIVE</i>"}
+setInterval(clock,1000);clock();
+const sum=(a,ty)=>a.filter(t=>t.type===ty).reduce((s,t)=>s+t.amount,0);
+["#q","#ft","#fm","#fd1","#fd2"].forEach(s=>$(s).oninput=render);
+$("#clr").onclick=()=>{$("#q").value=$("#ft").value=$("#fm").value=$("#fd1").value=$("#fd2").value="";render()};
+function renderKeep(){$("#keepbox").innerHTML=keep.length?`<small style="color:var(--mut)">Saved attachments (click ✕ to remove):</small> `+keep.map((f,i)=>`<span class="chip">${esc(f.name)} <b data-k="${i}" style="cursor:pointer" title="Remove">✕</b></span>`).join(""):""}
+$("#keepbox").onclick=e=>{const i=e.target.dataset.k;if(i===undefined)return;keep.splice(+i,1);renderKeep()};
+function startEdit(id){
+  const t=tx.find(x=>x.id===id),f=$("#f");if(!t)return;
+  editId=t.id;keep=[...(t.files||[])];
+  f.type.value=t.type;f.date.value=t.date;f.amount.value=t.amount;f.category.value=t.category;f.method.value=t.method;f.desc.value=t.desc;
+  $("#save").textContent="Update transaction";$("#cancel").classList.remove("hide");
+  $("#msg").textContent="Editing: change any field, remove saved attachments with ✕, or add new files, then press Update.";
+  renderKeep();scrollTo({top:0,behavior:"smooth"});
+}
+$("#list").onclick=async e=>{
+  const b=e.target.closest("button,.chip");if(!b)return;
+  if(b.dataset.d){if(confirm("Delete this transaction and its attachments?")){await del(b.dataset.d);tx=tx.filter(t=>t.id!==b.dataset.d);render()}}
+  if(b.dataset.e)startEdit(b.dataset.e);
+  if(b.dataset.o)openTx(b.dataset.o);
+  if(b.dataset.s)showAtts(b.dataset.s);
+  if(b.dataset.p){const t=tx.find(x=>x.id===b.dataset.p);if(t)doPrint(single(t))}
+  if(b.dataset.v){const[id,i]=b.dataset.v.split(":");viewAtt(id,+i)}
+};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#modal").click()});
+
+/* profit & loss */
+$("#pp").onchange=()=>{document.querySelectorAll(".cr").forEach(x=>x.classList.toggle("hide",$("#pp").value!=="custom"));pl()};
+$("#pf").onchange=$("#pt").onchange=pl;
+$("#print").onclick=()=>window.print();
+function range(){const p=$("#pp").value,d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0");
+  if(p==="month")return[`${y}-${m}-01`,`${y}-${m}-31`,`${d.toLocaleString(undefined,{month:"long"})} ${y}`];
+  if(p==="year")return[`${y}-01-01`,`${y}-12-31`,`Year ${y}`];
+  if(p==="custom"){const a=$("#pf").value||"0000-01-01",b=$("#pt").value||"9999-12-31";return[a,b,`${$("#pf").value||"start"} to ${$("#pt").value||"today"}`]}
+  return["0000-01-01","9999-12-31","All time"]}
+function group(a){const g={};a.forEach(t=>g[t.category]=(g[t.category]||0)+t.amount);return Object.entries(g).sort((x,y)=>y[1]-x[1])}
+function pl(){
+  const [a,b,label]=range(),s=tx.filter(t=>t.date>=a&&t.date<=b);
+  const inc=sum(s,"income"),ex=sum(s,"expense"),net=inc-ex,mg=inc?(net/inc*100):0;
+  const sec=(title,arr,total,cls)=>`<div class="card"><table><thead><tr><th>${title}</th><th class="n">Amount</th><th class="n">% of income</th></tr></thead><tbody>${arr.length?arr.map(([c,v])=>`<tr><td>${esc(c)}</td><td class="n">${fmt(v)}</td><td class="n">${inc?(v/inc*100).toFixed(1):"0.0"}%</td></tr>`).join(""):`<tr><td colspan="3" class="empty">None in this period</td></tr>`}<tr><th>Total</th><th class="n ${cls}">${fmt(total)}</th><th></th></tr></tbody></table></div>`;
+  const mo={};s.forEach(t=>{const k=t.date.slice(0,7);mo[k]=mo[k]||{i:0,e:0};mo[k][t.type==="income"?"i":"e"]+=t.amount});
+  const ks=Object.keys(mo).sort(),mx=Math.max(1,...ks.map(k=>Math.max(mo[k].i,mo[k].e)));
+  $("#plout").innerHTML=`<div class="card"><h2 style="margin:0 0 2px;font:700 18px Georgia,serif">Profit and Loss Statement</h2><span style="color:var(--mut)">${esc(label)}</span></div>
+  <div class="stats"><div class="stat"><small>Income</small><b class="inc">${fmt(inc)}</b></div><div class="stat"><small>Expenses</small><b class="exp">${fmt(ex)}</b></div><div class="stat"><small>${net>=0?"Net profit":"Net loss"}</small><b class="${net>=0?"inc":"exp"}">${fmt(Math.abs(net))}</b></div><div class="stat"><small>Profit margin</small><b>${mg.toFixed(1)}%</b></div></div>
+  ${sec("Income",group(s.filter(t=>t.type==="income")),inc,"inc")}${sec("Expenses",group(s.filter(t=>t.type==="expense")),ex,"exp")}
+  <div class="card"><b>Net ${net>=0?"profit":"loss"} = Income − Expenses = ${fmt(net)}</b></div>
+  <div class="card"><b>Monthly trend</b> <small style="color:var(--mut)">(income above the line, expenses below)</small><div class="bars" style="margin-top:10px">${ks.length?ks.map(k=>`<div class="bar"><span>${k}</span><div class="track"><i style="width:${mo[k].i/mx*100}%;background:var(--inc)"></i><i style="width:${mo[k].e/mx*100}%;background:var(--exp)"></i></div><span class="${mo[k].i-mo[k].e>=0?"inc":"exp"}">${fmt(mo[k].i-mo[k].e)}</span></div>`).join(""):`<div class="empty">No data for this period</div>`}</div></div>`;
+}
+
+/* ===== open / edit / print / PDF / Word: single transactions and grouped ledger reports ===== */
+const stamp=()=>new Date().toLocaleString();
+const pad=n=>String(n).padStart(2,"0");
+const isoD=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pdate=s=>new Date(s+"T00:00:00");
+const nice=d=>d.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
+const isImg=f=>(f.type||"").startsWith("image/");
+const TITLES={day:"Daily Ledger Report",week:"Weekly Ledger Report",month:"Monthly Ledger Report"};
+
+function ledgerData(){
+  const l=filtered().slice().sort((a,b)=>a.date.localeCompare(b.date)||0),p=[];
+  if($("#ft").value)p.push($("#ft").value==="income"?"Income only":"Expenses only");
+  if($("#fm").value)p.push("Month: "+$("#fm").value);
+  if($("#fd1").value||$("#fd2").value)p.push(`Dates: ${$("#fd1").value||"start"} to ${$("#fd2").value||"today"}`);
+  if($("#q").value)p.push('Search: "'+$("#q").value+'"');
+  const g=$("#grp").value;
+  return{l,label:p.length?p.join(" · "):"All transactions",o:{group:g,att:$("#att").checked,title:TITLES[g]||"Transactions Ledger"}};
+}
+const single=t=>({l:[t],label:`${t.category} · ${t.date}`,o:{group:"",att:true,title:"Transaction Details"}});
+
+function makeGroups(l,g){
+  if(!g)return[{k:"",title:"",items:l}];
+  const m=new Map();
+  l.forEach(t=>{
+    const d=pdate(t.date);let k,title;
+    if(g==="day"){k=t.date;title=d.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+    else if(g==="week"){const s=new Date(d);s.setDate(d.getDate()-((d.getDay()+6)%7));const e=new Date(s);e.setDate(s.getDate()+6);k=isoD(s);title=`Week: ${nice(s)} – ${nice(e)}`}
+    else{k=t.date.slice(0,7);title=d.toLocaleDateString(undefined,{month:"long",year:"numeric"})}
+    if(!m.has(k))m.set(k,{k,title,items:[]});m.get(k).items.push(t);
+  });
+  return[...m.values()].sort((a,b)=>a.k.localeCompare(b.k));
+}
+
+function attHTML(t){
+  return(t.files||[]).map(f=>isImg(f)?`<div class="im"><img src="${f.data}" alt=""><small>${esc(f.name)}</small></div>`:`<div class="fl">Attachment: ${esc(f.name)} <small>${f.type==="application/pdf"?"(PDF file – open the original file to view or print it)":""}</small></div>`).join("");
+}
+function reportHTML(l,label,o){
+  const inc=sum(l,"income"),ex=sum(l,"expense"),net=inc-ex;
+  const row=t=>`<tr><td>${esc(t.date)}</td><td>${esc(t.category)}</td><td>${esc(t.method)}</td><td>${esc(t.desc)}${!o.att&&t.files&&t.files.length?`<br><small>Attachments: ${t.files.map(f=>esc(f.name)).join(", ")}</small>`:""}</td><td class="n g">${t.type==="income"?fmt(t.amount):""}</td><td class="n r">${t.type==="expense"?fmt(t.amount):""}</td></tr>`+(o.att&&t.files&&t.files.length?`<tr class="att"><td colspan="6">${attHTML(t)}</td></tr>`:"");
+  const groups=makeGroups(l,o.group);
+  const tbl=g=>{const i=sum(g.items,"income"),e=sum(g.items,"expense");
+    return(g.title?`<h3>${esc(g.title)}</h3>`:"")+`<table><thead><tr><th>Date</th><th>Category</th><th>Method</th><th>Description</th><th class="n">Income</th><th class="n">Expense</th></tr></thead><tbody>${g.items.length?g.items.map(row).join(""):`<tr><td colspan="6" style="text-align:center;padding:16px">No transactions</td></tr>`}</tbody><tfoot><tr><td colspan="4">${g.title?"Subtotal":"Total"}</td><td class="n g">${fmt(i)}</td><td class="n r">${fmt(e)}</td></tr></tfoot></table>`};
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>ZAAM GROUP – ${esc(o.title)}</title><style>
+@page{size:A4 landscape;margin:12mm}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font:12px/1.4 Arial,Helvetica,sans-serif;color:#14232b;margin:0}
+.brand{display:inline-block;background:#14232b;color:#FFD600;font-weight:800;letter-spacing:.08em;font-size:22px;padding:6px 16px;border-radius:8px}
+h2{margin:10px 0 2px;font-size:17px}.mut{color:#5d6f78}
+h3{margin:16px 0 6px;font-size:14px;background:#e8eef1;padding:5px 8px;border-radius:4px;page-break-after:avoid}
+.sum{display:flex;gap:10px;margin:12px 0}.sum div{border:1px solid #bbb;border-radius:6px;padding:6px 12px}.sum b{display:block;font-size:14px}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid #c9d3d8;padding:5px 7px;text-align:left;vertical-align:top}
+th{background:#e8eef1}.n{text-align:right;white-space:nowrap}.g{color:#0a7a4b}.r{color:#b3361f}
+tr{page-break-inside:avoid}thead{display:table-header-group}tfoot td{font-weight:700;background:#f3f6f7}
+.att td{background:#fafcfc}.im{display:inline-block;margin:4px 12px 4px 0;vertical-align:top}.im img{max-width:460px;max-height:320px;display:block;border:1px solid #ccc}.im small{display:block;color:#5d6f78}.fl{margin:2px 0}
+</style></head><body>
+<span class="brand">ZAAM GROUP</span><h2>${esc(o.title)}</h2>
+<div class="mut">${esc(label)} · Generated ${esc(stamp())}</div>
+<div class="sum"><div>Total income<b class="g">${fmt(inc)}</b></div><div>Total expenses<b class="r">${fmt(ex)}</b></div><div>${net>=0?"Net profit":"Net loss"}<b class="${net>=0?"g":"r"}">${fmt(Math.abs(net))}</b></div><div>Transactions<b>${l.length}</b></div></div>
+${groups.length?groups.map(tbl).join(""):tbl({title:"",items:[]})}
+</body></html>`;
+}
+function printHTML(html){
+  const f=document.createElement("iframe");
+  f.style.cssText="position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+  document.body.appendChild(f);
+  f.onload=()=>setTimeout(()=>{f.contentWindow.focus();f.contentWindow.print();setTimeout(()=>f.remove(),60000)},300);
+  f.srcdoc=html;
+}
+function saveBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
+function rname(d,ext){
+  if(d.o.title==="Transaction Details"){const t=d.l[0];return `ZAAM-GROUP-Transaction-${t.date}-${String(t.category).replace(/[^\w-]+/g,"_")}.${ext}`}
+  return `ZAAM-GROUP-${d.o.group?{day:"Daily",week:"Weekly",month:"Monthly"}[d.o.group]+"-":""}Ledger-${today()}.${ext}`;
+}
+const doPrint=d=>printHTML(reportHTML(d.l,d.label,d.o));
+async function doPDF(d){
+  const html=reportHTML(d.l,d.label,d.o),name=rname(d,"pdf");
+  if(window.ngc&&window.ngc.savePDF){const r=await window.ngc.savePDF(html,name);if(r&&r.error)alert("Could not save PDF: "+r.error)}
+  else{alert('In the print window, choose "Save as PDF" as the printer.');printHTML(html)}
+}
+async function doWord(d){try{saveBlob(await docxBlob(d.l,d.label,d.o),rname(d,"docx"))}catch(e){alert("Could not create the Word file: "+(e&&e.message||e))}}
+
+/* minimal ZIP (stored) + DOCX writer, no libraries needed */
+function makeZip(files){
+  const enc=new TextEncoder(),T=[];
+  for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;T.push(c>>>0)}
+  const crc=d=>{let c=-1;for(let i=0;i<d.length;i++)c=T[(c^d[i])&255]^(c>>>8);return(~c)>>>0};
+  const u16=n=>[n&255,(n>>>8)&255],u32=n=>[n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255];
+  const parts=[],cd=[];let off=0;
+  const push=a=>{const u=a instanceof Uint8Array?a:Uint8Array.from(a);parts.push(u);off+=u.length};
+  files.forEach(f=>{
+    const name=enc.encode(f.name),data=f.bytes||enc.encode(f.text),c=crc(data),start=off;
+    push([...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0x21),...u32(c),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0)]);
+    push(name);push(data);
+    cd.push([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0x21),...u32(c),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(start),...name]);
+  });
+  const cdStart=off;let cdSize=0;
+  cd.forEach(r=>{const u=Uint8Array.from(r);cdSize+=u.length;parts.push(u)});
+  parts.push(Uint8Array.from([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(cdSize),...u32(cdStart),...u16(0)]));
+  return new Blob(parts,{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+}
+function prepImage(f){
+  return new Promise(res=>{
+    const im=new Image();
+    im.onload=()=>{try{
+      if(!im.naturalWidth||!im.naturalHeight)return res(null);
+      const s=Math.min(1,1000/im.naturalWidth,1000/im.naturalHeight),w=Math.max(1,Math.round(im.naturalWidth*s)),h=Math.max(1,Math.round(im.naturalHeight*s));
+      const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d"),png=f.type==="image/png";
+      if(!png){x.fillStyle="#fff";x.fillRect(0,0,w,h)}
+      x.drawImage(im,0,0,w,h);
+      const bin=atob(c.toDataURL(png?"image/png":"image/jpeg",.88).split(",")[1]),b=new Uint8Array(bin.length);
+      for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);
+      res({bytes:b,ext:png?"png":"jpeg",w,h});
+    }catch(e){res(null)}};
+    im.onerror=()=>res(null);im.src=f.data;
+  });
+}
+async function docxBlob(l,label,o){
+  const X=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const run=(t,p={})=>`<w:r><w:rPr>${p.b?"<w:b/>":""}${p.c?`<w:color w:val="${p.c}"/>`:""}<w:sz w:val="${p.s||20}"/></w:rPr><w:t xml:space="preserve">${X(t)}</w:t></w:r>`;
+  const para=(t,p={})=>`<w:p><w:pPr>${p.keep?"<w:keepNext/>":""}${p.fill?`<w:shd w:val="clear" w:color="auto" w:fill="${p.fill}"/>`:""}<w:spacing w:after="${p.a??80}"/>${p.j?`<w:jc w:val="${p.j}"/>`:""}</w:pPr>${run(t,p)}</w:p>`;
+  const W=[1500,2300,1900,5198,2250,2250];
+  const cell=(t,i,p={})=>`<w:tc><w:tcPr><w:tcW w:w="${W[i]}" w:type="dxa"/>${p.bg?`<w:shd w:val="clear" w:color="auto" w:fill="${p.bg}"/>`:""}</w:tcPr>${para(t,{...p,a:0,fill:null})}</w:tc>`;
+  const tr=(cells,hdr)=>`<w:tr>${hdr?"<w:trPr><w:tblHeader/></w:trPr>":""}${cells.join("")}</w:tr>`;
+  const media=[],rels=[];let nid=0;
+  const pic=async f=>{
+    const im=await prepImage(f);
+    if(!im)return para("Attachment: "+f.name,{s:18,a:40});
+    nid++;const rid="rIdM"+nid,fn=`image${nid}.${im.ext}`;
+    media.push({name:"word/media/"+fn,bytes:im.bytes});
+    rels.push(`<Relationship Id="${rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${fn}"/>`);
+    const k=Math.min(1,480/im.w,340/im.h),cx=Math.round(im.w*k*9525),cy=Math.round(im.h*k*9525);
+    return `<w:p><w:pPr><w:spacing w:after="20"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${nid}" name="Picture ${nid}"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="${nid}" name="${X(fn)}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`+para(f.name,{s:16,c:"5D6F78",a:60});
+  };
+  const attRow=async t=>{
+    const fs=t.files||[];if(!o.att||!fs.length)return"";
+    let c="";
+    for(const f of fs)c+=isImg(f)?await pic(f):para("Attachment: "+f.name+(f.type==="application/pdf"?" (PDF file – open the original file to view or print it)":""),{s:18,a:40});
+    return `<w:tr><w:tc><w:tcPr><w:tcW w:w="15398" w:type="dxa"/><w:gridSpan w:val="6"/><w:shd w:val="clear" w:color="auto" w:fill="FAFCFC"/></w:tcPr>${c}</w:tc></w:tr>`;
+  };
+  const inc=sum(l,"income"),ex=sum(l,"expense"),net=inc-ex;
+  const head=tr(["Date","Category","Method","Description","Income","Expense"].map((h,i)=>cell(h,i,{b:1,bg:"E8EEF1",j:i>3?"right":null})),1);
+  const bd=["top","left","bottom","right","insideH","insideV"].map(k=>`<w:${k} w:val="single" w:sz="4" w:space="0" w:color="C9D3D8"/>`).join("");
+  const tblOpen=`<w:tbl><w:tblPr><w:tblW w:w="15398" w:type="dxa"/><w:tblBorders>${bd}</w:tblBorders><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="40" w:type="dxa"/><w:left w:w="80" w:type="dxa"/><w:bottom w:w="40" w:type="dxa"/><w:right w:w="80" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${W.map(w=>`<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`;
+  let body=para("  ZAAM GROUP  ",{b:1,s:36,c:"FFD600",fill:"14232B",a:120})+para(o.title,{b:1,s:30,a:40})+para(label+" · Generated "+stamp(),{c:"5D6F78",a:120})
+    +para(`Total income: ${fmt(inc)}    Total expenses: ${fmt(ex)}    ${net>=0?"Net profit":"Net loss"}: ${fmt(Math.abs(net))}    Transactions: ${l.length}`,{b:1,a:160});
+  for(const g of makeGroups(l,o.group)){
+    if(g.title)body+=para(g.title,{b:1,s:24,fill:"E8EEF1",a:60,keep:1});
+    let rows="";
+    for(const t of g.items){
+      const d=t.desc+(!o.att&&t.files&&t.files.length?(t.desc?" ":"")+"[Attachments: "+t.files.map(f=>f.name).join(", ")+"]":"");
+      rows+=tr([cell(t.date,0),cell(t.category,1),cell(t.method,2),cell(d,3),cell(t.type==="income"?fmt(t.amount):"",4,{j:"right",c:"0A7A4B"}),cell(t.type==="expense"?fmt(t.amount):"",5,{j:"right",c:"B3361F"})]);
+      rows+=await attRow(t);
+    }
+    const i=sum(g.items,"income"),e=sum(g.items,"expense"),bg="F3F6F7";
+    rows+=tr([cell(g.title?"Subtotal":"Total",0,{b:1,bg}),cell("",1,{bg}),cell("",2,{bg}),cell("",3,{bg}),cell(fmt(i),4,{b:1,bg,j:"right",c:"0A7A4B"}),cell(fmt(e),5,{b:1,bg,j:"right",c:"B3361F"})]);
+    body+=tblOpen+head+rows+"</w:tbl><w:p/>";
+  }
+  if(o.group)body+=para(`Grand total — Income: ${fmt(inc)}    Expenses: ${fmt(ex)}    ${net>=0?"Net profit":"Net loss"}: ${fmt(Math.abs(net))}`,{b:1});
+  const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"><w:body>${body}<w:sectPr><w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/><w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="400" w:footer="400" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  return makeZip([
+    {name:"[Content_Types].xml",text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`},
+    {name:"_rels/.rels",text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`},
+    {name:"word/_rels/document.xml.rels",text:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rels.join("")}</Relationships>`},
+    {name:"word/document.xml",text:doc},
+    ...media
+  ]);
+}
+
+/* ===== open a transaction / view an attachment ===== */
+const urls=[];
+function blobURL(f){
+  const[h,b]=f.data.split(","),mime=(h.match(/:(.*?);/)||[])[1]||f.type||"application/octet-stream",bin=atob(b),u=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+  const url=URL.createObjectURL(new Blob([u],{type:mime}));urls.push(url);return url;
+}
+function closeModal(){$("#modal").classList.remove("on");$("#mbody").innerHTML="";urls.splice(0).forEach(u=>URL.revokeObjectURL(u))}
+const sysOpenBtn=(id,i)=>window.ngc&&window.ngc.openFile?`<button class="btn alt sm" data-o="${id}:${i}">Open in default app</button>`:"";
+function openTx(id){
+  const t=tx.find(x=>x.id===id);if(!t)return;
+  const fs=t.files||[];
+  const att=fs.map((f,i)=>{
+    const u=blobURL(f),p=f.type==="application/pdf";
+    return `<div class="at"><div class="row"><b>${esc(f.name)}</b><span class="row" style="margin-left:auto"><button class="btn alt sm" data-v="${t.id}:${i}">View large</button>${sysOpenBtn(t.id,i)}<a class="btn alt sm" href="${u}" download="${esc(f.name)}">Download</a></span></div>${isImg(f)?`<img src="${u}" alt="${esc(f.name)}">`:p?`<iframe src="${u}" title="${esc(f.name)}"></iframe>`:`<div class="empty">No preview for this file type. Use Open or Download.</div>`}</div>`;
+  }).join("");
+  $("#mbody").innerHTML=`<div class="mbox"><div class="row" style="justify-content:space-between"><h2 style="margin:0;font:700 18px Georgia,serif">Transaction details</h2><button class="btn alt sm" data-x="close">✕ Close</button></div>
+  <table style="margin:10px 0"><tbody>
+  <tr><th>Type</th><td class="${t.type==="income"?"inc":"exp"}"><b>${t.type==="income"?"Income":"Expense"}</b></td></tr>
+  <tr><th>Date</th><td>${esc(t.date)}</td></tr>
+  <tr><th>Amount</th><td class="${t.type==="income"?"inc":"exp"}"><b>${fmt(t.amount)}</b></td></tr>
+  <tr><th>Category</th><td>${esc(t.category)}</td></tr>
+  <tr><th>Payment method</th><td>${esc(t.method)}</td></tr>
+  <tr><th>Description</th><td>${esc(t.desc)||"—"}</td></tr></tbody></table>
+  <h3 style="margin:8px 0">Attachments (${fs.length})</h3>${att||`<div class="empty">No attachments</div>`}
+  <div class="row" style="margin-top:12px"><button class="btn" data-a="edit" data-id="${t.id}">Edit</button><button class="btn alt" data-a="print" data-id="${t.id}">🖨 Print with attachments</button><button class="btn alt" data-a="pdf" data-id="${t.id}">⬇ PDF</button><button class="btn alt" data-a="word" data-id="${t.id}">⬇ Word</button></div></div>`;
+  $("#modal").classList.add("on");
+}
+function showAtts(id){
+  const t=tx.find(x=>x.id===id);if(!t)return;
+  const fs=t.files||[];
+  if(!fs.length){alert("This transaction has no attachments. Use Edit to add files.");return}
+  const att=fs.map((f,i)=>{
+    const u=blobURL(f),p=f.type==="application/pdf";
+    return `<div class="at"><div class="row"><b>${esc(f.name)}</b><span class="row" style="margin-left:auto"><button class="btn alt sm" data-v="${t.id}:${i}">View large</button>${sysOpenBtn(t.id,i)}<a class="btn alt sm" href="${u}" download="${esc(f.name)}">Download</a></span></div>${isImg(f)?`<img src="${u}" alt="${esc(f.name)}">`:p?`<iframe src="${u}" title="${esc(f.name)}"></iframe>`:`<div class="empty">No preview for this file type. Use Open in default app or Download.</div>`}</div>`;
+  }).join("");
+  $("#mbody").innerHTML=`<div class="mbox"><div class="row" style="justify-content:space-between"><h2 style="margin:0;font:700 18px Georgia,serif">Attachments – ${esc(t.category)} · ${esc(t.date)}</h2><button class="btn alt sm" data-x="close">✕ Close</button></div><div style="margin-top:10px">${att}</div>
+  <div class="row" style="margin-top:12px"><button class="btn" data-a="edit" data-id="${t.id}">Edit / add files</button><button class="btn alt" data-a="print" data-id="${t.id}">🖨 Print with attachments</button><button class="btn alt" data-a="pdf" data-id="${t.id}">PDF</button><button class="btn alt" data-a="word" data-id="${t.id}">Word</button></div></div>`;
+  $("#modal").classList.add("on");
+}
+function viewAtt(id,i){
+  const t=tx.find(x=>x.id===id);if(!t)return;const f=t.files[i],u=blobURL(f),p=f.type==="application/pdf";
+  $("#mbody").innerHTML=`<div class="mbox wide"><div class="row" style="margin-bottom:8px"><b>${esc(f.name)}</b><span class="row" style="margin-left:auto"><button class="btn alt sm" data-a="back" data-id="${t.id}">← Back to transaction</button>${sysOpenBtn(t.id,i)}<a class="btn alt sm" href="${u}" download="${esc(f.name)}">Download</a>${isImg(f)?`<button class="btn alt sm" data-a="printimg" data-id="${t.id}" data-i="${i}">🖨 Print</button>`:""}<button class="btn alt sm" data-x="close">✕ Close</button></span></div>${isImg(f)?`<img class="big" src="${u}" alt="${esc(f.name)}">`:p?`<iframe class="big" src="${u}" title="${esc(f.name)}"></iframe><div class="empty" style="padding:8px">To print a PDF, use the printer icon in the viewer above, or "Open in default app".</div>`:`<div class="empty">This file type cannot be previewed here. Use Open in default app or Download.</div>`}</div>`;
+  $("#modal").classList.add("on");
+}
+$("#mbody").onclick=async e=>{
+  const b=e.target.closest("[data-a],[data-v],[data-x],[data-o]");if(!b)return;
+  if(b.dataset.x==="close")return closeModal();
+  if(b.dataset.v){const[id,i]=b.dataset.v.split(":");return viewAtt(id,+i)}
+  if(b.dataset.o){const[id,i]=b.dataset.o.split(":"),f=(tx.find(x=>x.id===id)||{files:[]}).files[+i];if(!f)return;
+    const r=await window.ngc.openFile(f.name,f.data);if(r&&r.error)alert(r.error);return}
+  const id=b.dataset.id,t=tx.find(x=>x.id===id);if(!t)return;
+  switch(b.dataset.a){
+    case"edit":closeModal();startEdit(id);break;
+    case"print":doPrint(single(t));break;
+    case"pdf":doPDF(single(t));break;
+    case"word":doWord(single(t));break;
+    case"back":openTx(id);break;
+    case"printimg":{const f=t.files[+b.dataset.i];printHTML(`<!DOCTYPE html><html><head><meta charset="utf-8"><style>@page{margin:10mm}body{margin:0;text-align:center}img{max-width:100%;max-height:270mm}</style></head><body><img src="${f.data}"></body></html>`);break}
+  }
+};
+$("#modal").onclick=e=>{if(e.target===$("#modal"))closeModal()};
+
+/* ledger report buttons */
+$("#prt").onclick=()=>doPrint(ledgerData());
+$("#pdf").onclick=()=>doPDF(ledgerData());
+$("#doc").onclick=()=>doWord(ledgerData());
+
+(async()=>{db=await openDB();await load();$("#f").date.value=today();render()})();
+</script>
+</body>
+</html>
